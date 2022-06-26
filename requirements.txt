@@ -4,4 +4,5 @@ falcon==3.1.0
 google-api-python-client==2.51.0
 google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.5.2
+jsonschema==4.6.0
 autoid3 @ git+https://github.com/kingcobra2468/AutoID3.git@70cf9ab4fd29538ee6f992ffd990de89c789772e
