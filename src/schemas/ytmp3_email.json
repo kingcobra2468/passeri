@@ -1,0 +1,19 @@
+{
+    "title": "YTMP3 Email",
+    "description": "Downloads a given youtube video as an mp3 and emails it to the recipient",
+    "type": "object",
+    "properties": {
+        "recipient_email": {
+            "description": "The email address where the mp3s will be sent to",
+            "type": "string"
+        },
+        "links": {
+            "description": "The protocol used by the service",
+            "type": "array"
+        }
+    },
+    "required": [
+        "recipient_email",
+        "links"
+    ]
+}
