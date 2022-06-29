@@ -6,6 +6,10 @@ from schemas import load_schema
 
 
 class EmailResource:
+    """EmailResource handles the resource that downloads a given Youtube
+    video and sends it to a given recipient email.
+    """
+
     def __init__(self, transit_pool):
         self._transit_pool = transit_pool
 
