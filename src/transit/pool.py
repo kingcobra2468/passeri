@@ -8,7 +8,7 @@ from ytmp3.converter import Converter
 
 
 class TransitPool:
-    """TransitPool manages workers that asynchronously perform YTMP3 to
+    """TransitPool manages workers that asynchronously perform ytmp3 to
     email sendoff.
     """
 
