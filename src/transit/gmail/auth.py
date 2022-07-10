@@ -3,6 +3,7 @@ import os
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.exceptions import RefreshError
 
 
 class Auth:
@@ -41,9 +42,12 @@ class Auth:
             )
 
         if creds:
-            if not creds.valid and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            return creds
+            try:
+                if not creds.valid and creds.expired and creds.refresh_token:
+                    creds.refresh(Request())
+                return creds
+            except RefreshError:
+                pass
 
         flow = InstalledAppFlow.from_client_secrets_file(
             self._credentials_file_path, scopes=self.SCOPES
