@@ -47,7 +47,7 @@ class TransitPool:
         self._gmail_client.send_files(recipient, *files)
 
         for file in files:
-            pathlib.Path.unlink(file)
+            pathlib.Path(file).unlink()
 
     @staticmethod
     def worker(request, download_path):
