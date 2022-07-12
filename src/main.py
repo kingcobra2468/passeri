@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import falcon
 
 from resources.email import EmailResource
+from resources.direct import DirectDownloadResource
 from transit.pool import TransitPool
 from transit.gmail.client import GmailClient
 
@@ -28,15 +29,18 @@ if __name__ == '__main__':
         getenv('PASSERI_CRED_FILE_PATH'), getenv('PASSERI_TOKEN_FILE_PATH')
     )
     transit_pool = TransitPool(gmail_client, getenv('PASSERI_DOWNLOAD_PATH'))
+
     email_resource = EmailResource(transit_pool)
+    direct_download_resource = DirectDownloadResource(
+        getenv('PASSERI_DOWNLOAD_PATH'))
 
     app = falcon.App(cors_enable=True)
     app.add_route('/ytmp3/email', email_resource)
+    app.add_route('/ytmp3', direct_download_resource)
     app.set_error_serializer(error_serializer)
 
     port = int(getenv('PASSERI_PORT'))
     with make_server('0.0.0.0', port, app) as httpd:
         logging.info(f'Serving on port {port}...')
 
-        # Serve until process is killed
         httpd.serve_forever()

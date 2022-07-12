@@ -1,5 +1,6 @@
 import os
 import asyncio
+import pathlib
 
 from autoid3.auto_id3_worker import AutoID3Worker
 import youtube_dl
@@ -46,6 +47,14 @@ class Converter:
         self._populate_metadata(files)
 
         return files
+
+    def clean(self):
+        """Removes the downloaded files from the filesystem.
+        """
+        files = self._get_files()
+
+        for file in files:
+            pathlib.Path(file).unlink()
 
     async def __populate_metadata(self, files):
         """Populates the ID3 metadata of the mp3s.
