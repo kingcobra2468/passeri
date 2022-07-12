@@ -3,7 +3,7 @@ import asyncio
 import pathlib
 
 from autoid3.auto_id3_worker import AutoID3Worker
-import youtube_dl
+import yt_dlp
 
 
 class Converter:
@@ -40,7 +40,7 @@ class Converter:
         Returns:
             List[str]: A list of paths to the output mp3s.
         """
-        with youtube_dl.YoutubeDL(self.YDL_OPTS) as ydl:
+        with yt_dlp.YoutubeDL(self.YDL_OPTS) as ydl:
             ydl.download(self._links)
 
         files = self._get_files()
@@ -85,7 +85,7 @@ class Converter:
             (List[str]): A list of paths to the output mp3s
         """
         filenames = []
-        with youtube_dl.YoutubeDL(self.YDL_OPTS) as ydl:
+        with yt_dlp.YoutubeDL(self.YDL_OPTS) as ydl:
             for link in self._links:
                 info_dict = ydl.extract_info(link, download=False)
                 title = info_dict.get('title', None)
