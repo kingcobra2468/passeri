@@ -1,8 +1,9 @@
 import os
 import asyncio
+import pathlib
 
 from autoid3.auto_id3_worker import AutoID3Worker
-import youtube_dl
+import yt_dlp
 
 
 class Converter:
@@ -39,13 +40,21 @@ class Converter:
         Returns:
             List[str]: A list of paths to the output mp3s.
         """
-        with youtube_dl.YoutubeDL(self.YDL_OPTS) as ydl:
+        with yt_dlp.YoutubeDL(self.YDL_OPTS) as ydl:
             ydl.download(self._links)
 
         files = self._get_files()
         self._populate_metadata(files)
 
         return files
+
+    def clean(self):
+        """Removes the downloaded files from the filesystem.
+        """
+        files = self._get_files()
+
+        for file in files:
+            pathlib.Path(file).unlink()
 
     async def __populate_metadata(self, files):
         """Populates the ID3 metadata of the mp3s.
@@ -76,7 +85,7 @@ class Converter:
             (List[str]): A list of paths to the output mp3s
         """
         filenames = []
-        with youtube_dl.YoutubeDL(self.YDL_OPTS) as ydl:
+        with yt_dlp.YoutubeDL(self.YDL_OPTS) as ydl:
             for link in self._links:
                 info_dict = ydl.extract_info(link, download=False)
                 title = info_dict.get('title', None)

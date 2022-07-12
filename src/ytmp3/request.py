@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -7,5 +7,5 @@ class ConversionRequest:
     """ConversionRequest contains meta for a given ytmp3 to
     email request.
     """
-    recipient: str
+    recipient: Optional[str]
     links: List
