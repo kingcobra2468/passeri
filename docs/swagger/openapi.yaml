@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:
+  description: A simple RESTful microservice that converts Youtube videos to MP3s. Automatically populates each MP3 with cover, title, and other metadata.
+  version: 1.0.0
+  title: Passeri
+servers:
+  - url: http://{hostname}:{port}
+    variables:
+      port:
+        default: "8085"
+      hostname:
+        default: 0.0.0.0
+paths:
+  /ytmp3:
+    get:
+      summary: Downloads a Youtube link and returns the mp3. 
+      parameters:
+        - name: link
+          in: query
+          description: Name of the tunnel.
+          required: true
+          schema:
+            type : string
+      responses:
+        "200":
+          description: The tunnel URI has successfully been retrieved.
+          content:
+            audio/mpeg:
+        "400":
+          description: Failed the process the request as the link param was not passed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /ytmp3/email
+    post:
+      summary: Downloads the Youtube links and sends it to the recipient email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipient_email:
+                  description: The email that the mp3s will be sent to.
+                  type: string
+                links:
+                  description: A list of Youtube links to download.
+                  type: [string]
+              required:
+                - recipient_email
+                - links
+      responses:
+        "200":
+          description: The tunnel has successfully been opened.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceURI"
+
+components:
+  schemas:
+    ServiceURI:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+          enum:
+            - success
+            - fail
+        data:
+          type: object
+          properties:
+            uri:
+              type: string
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+          enum:
+            - error
+        data:
+          type: object
+          properties:
+            title:
+              type: string
+              example: Summary of the error.
+            description:
+              type: string
+              example: Detailed description of the error.
+              
