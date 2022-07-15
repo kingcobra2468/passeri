@@ -1,7 +1,6 @@
 # Passeri
-A simple RESTful microservice for downloading Youtube videos as MP3s and
-sending them to a recipient via email. Automatically fills cover, title,
-and other ID3 metadata of compliant MP3s via Shazam integration.
+A simple RESTful microservice that converts Youtube videos to MP3s. Automatically
+populates each MP3 with cover, title, and other metadata.
 
 ## Gmail Integration
 Due to recent changes with Gmail's API, it is necessary to create a Google
