@@ -26,13 +26,16 @@ paths:
           description: The tunnel URI has successfully been retrieved.
           content:
             audio/mpeg:
+              schema:
+                type: string
+                format: binary
         "400":
           description: Failed the process the request as the link param was not passed.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /ytmp3/email
+  /ytmp3/email:
     post:
       summary: Downloads the Youtube links and sends it to the recipient email.
       requestBody:
@@ -47,7 +50,9 @@ paths:
                   type: string
                 links:
                   description: A list of Youtube links to download.
-                  type: [string]
+                  type: array
+                  items:
+                    type: string
               required:
                 - recipient_email
                 - links
