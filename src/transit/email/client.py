@@ -2,36 +2,36 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.encoders import encode_base64
 import os
-import base64
 import mimetypes
-
-from googleapiclient.discovery import build
-
-from transit.gmail.auth import Auth
+import smtplib
+import ssl
 
 
-class GmailClient:
-    """GmailClient serves as a client to interact with Gmail through
-    the official Google Gmail API.
+class EmailClient:
+    """EmailClient serves as a client to interact with SMTP servers.
     """
     MAX_EMAIL_BODY_MB = 25
 
-    def __init__(self, credentials_file_path, token_file_path):
+    def __init__(self, email, password, smtp_server='smtp.gmail.com', smtp_port=465):
         """Constructor.
 
         Args:
-            credentials_file_path (str): Path to the credentials file.
-            token_file_path (str): Path to the token file. 
+            email (str): The email address of the sender email.
+            password (str): The password of the sender email.
+            smtp_server (str, optional): _description_. Defaults to 'smtp.gmail.com'.
+            smtp_port (int, optional): _description_. Defaults to 465.
         """
         self._client = None
-        self._auth_client = Auth(credentials_file_path, token_file_path)
-        self._setup()
+        self._email = email
+        self._setup(email, password, smtp_server, smtp_port)
 
-    def _setup(self):
+    def _setup(self, email, password, smtp_server, smtp_port):
         """Sets up a Gmail client with the client credentials.
         """
-        self._client = build(
-            'gmail', 'v1', credentials=self._auth_client.get_creds())
+        ssl_context = ssl.create_default_context()
+        self._client = smtplib.SMTP_SSL(
+            smtp_server, smtp_port, context=ssl_context)
+        self._client.login(email, password)
 
     def send_files(self, recipient, *files):
         """Sends files to a given recipients. In the case where the total
@@ -107,10 +107,7 @@ class GmailClient:
                             'attachment', filename=filename)
             message.attach(part)
 
-        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-        create_message = {'raw': encoded_message}
-
-        self._client.users().messages().send(userId='me', body=create_message).execute()
+        self._client.sendmail(self._email, recipient, message.as_string())
 
     def _get_file_size(self, file):
         """Gets the size of a given file.

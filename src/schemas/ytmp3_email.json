@@ -8,7 +8,7 @@
             "type": "string"
         },
         "links": {
-            "description": "The protocol used by the service",
+            "description": "Links of the Youtube videos",
             "type": "array"
         }
     },

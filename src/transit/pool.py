@@ -12,14 +12,14 @@ class TransitPool:
     email sendoff.
     """
 
-    def __init__(self, gmail_client, download_path):
+    def __init__(self, email_client, download_path):
         """Constructor.
 
         Args:
-            gmail_client (transit.gmail.client.GmailClient): The Gmail client.
+            email_client (transit.email.client.EmailClient): The Email client.
             download_path (str): The path where mp3s will temporary be downloaded to. 
         """
-        self._gmail_client = gmail_client
+        self._email_client = email_client
         self._request_queue = Queue()
         self._executor = ThreadPoolExecutor(max_workers=2)
         self._download_path = download_path
@@ -44,7 +44,7 @@ class TransitPool:
             future (Future): The future which holds the path mp3 file paths.
         """
         files = future.result()
-        self._gmail_client.send_files(recipient, *files)
+        self._email_client.send_files(recipient, *files)
 
         for file in files:
             pathlib.Path(file).unlink()
