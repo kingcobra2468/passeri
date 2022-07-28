@@ -9,7 +9,7 @@ import falcon
 from resources.email import EmailResource
 from resources.direct import DirectDownloadResource
 from transit.pool import TransitPool
-from transit.gmail.client import GmailClient
+from transit.email.client import EmailClient
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 load_dotenv()
@@ -25,10 +25,9 @@ def error_serializer(req, resp, exception):
 
 
 if __name__ == '__main__':
-    gmail_client = GmailClient(
-        getenv('PASSERI_CRED_FILE_PATH'), getenv('PASSERI_TOKEN_FILE_PATH')
-    )
-    transit_pool = TransitPool(gmail_client, getenv('PASSERI_DOWNLOAD_PATH'))
+    email_client = EmailClient(
+        getenv('PASSERI_EMAIL_ADDRESS'), getenv('PASSERI_EMAIL_PASSWORD'))
+    transit_pool = TransitPool(email_client, getenv('PASSERI_DOWNLOAD_PATH'))
 
     email_resource = EmailResource(transit_pool)
     direct_download_resource = DirectDownloadResource(
