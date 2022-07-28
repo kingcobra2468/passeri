@@ -3,27 +3,25 @@ A simple RESTful microservice that converts Youtube videos to MP3s. Automaticall
 populates each MP3 with cover, title, and other metadata.
 
 ## Gmail Integration
-Due to recent changes with Gmail's API, it is necessary to create a Google
-Cloud project is order to access the Gmail API. For the account that will be
-used as the sender account, the following steps need to be followed.
-1. Setup a new Google Cloud project.
-2. Enable the Gmail API for the project.
-3. Create new credentials under OAuth 2.0 Client IDs.
-4. Once created, download the file. The path to the file will need to be
-   referenced to by [**PASSERI_CRED_FILE_PATH**](#config).
-
-### Token Generation
-If no token file currently exists, one will be created at the path
-**PASSERI_TOKEN_FILE_PATH** the first time the program is run. A prompt will
-be displayed with instructions on how to allow Passeri to use the selected Gmail
-account as the sender account.
+Due to recent changes with Gmail's API, it is no longer possible to use a Gmail
+account's email + password for email automation. However, once an app
+password is created, one can use the email + app password to automatically send
+emails. To do so, follow these steps:
+1. Navigate to https://myaccount.google.com/. Ensure that 2FA is enabled
+   for the account(this step is critical).
+2. Then, click Security on the left. 
+3. Scroll down to the "Signing in to Google" card.
+4. Click App passwords.
+5. Enter your password again.
+6. Select app (Mail) and device (whatever you want).
+7. Generate. Now, it is possible to automatically send emails with this
+   account. Set this generated password to **PASSERI_EMAIL_PASSWORD**.
 
 ## Config
 By copying `env.template` into `/src` as `.env` (e.g. `cp env.template src/.env`),
 the following config options can then be set:
-- **PASSERI_CRED_FILE_PATH=** the path to the Google project OAuth 2.0 Client IDs
-    credentials file.
-- **PASSERI_TOKEN_FILE_PATH=** the path to the Google API `token.json` file.
+- **PASSERI_EMAIL_ADDRESS=** the email address of the email account.
+- **PASSERI_EMAIL_PASSWORD=** the password of the email account.
 - **PASSERI_DOWNLOAD_PATH=** the directory where mp3s will be temporary stored during
     ID3 metadata entry.
 - **PASSERI_PORT=** the port address of Passeri.
