@@ -1,12 +1,12 @@
 FROM python:3.7
 
 ARG passeri_port
-ARG passeri_cred_file_path
-ARG passeri_token_file_path
+ARG passeri_email_address
+ARG passeri_email_password
 ARG passer_download_path=/tmp
 
-ENV PASSERI_CRED_FILE_PATH=${passeri_cred_file_path}
-ENV PASSERI_TOKEN_FILE_PATH=${passeri_token_file_path}
+ENV PASSERI_EMAIL_ADDRESS=${passeri_email_address}
+ENV PASSERI_EMAIL_PASSWORD=${passeri_email_password}
 ENV PASSERI_DOWNLOAD_PATH=${passer_download_path}
 ENV PASSERI_PORT=${passeri_port}
 
