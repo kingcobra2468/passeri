@@ -107,7 +107,11 @@ class EmailClient:
                             'attachment', filename=filename)
             message.attach(part)
 
-        self._client.sendmail(self._email, recipient, message.as_string())
+        try:
+            self._client.sendmail(self._email, recipient, message.as_string())
+        except smtplib.SMTPServerDisconnected:
+            self._client.connect()
+            self._client.sendmail(self._email, recipient, message.as_string())
 
     def _get_file_size(self, file):
         """Gets the size of a given file.
