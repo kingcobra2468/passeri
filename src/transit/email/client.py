@@ -109,7 +109,7 @@ class EmailClient:
 
         try:
             self._client.sendmail(self._email, recipient, message.as_string())
-        except smtplib.SMTPServerDisconnected:
+        except (smtplib.SMTPServerDisconnected, smtplib.SMTPSenderRefused):
             self._client.connect()
             self._client.sendmail(self._email, recipient, message.as_string())
 
