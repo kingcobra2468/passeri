@@ -23,6 +23,8 @@ class EmailClient:
         """
         self._client = None
         self._email = email
+        self._smtp_server = smtp_server
+        self._smtp_port = smtp_port
         self._setup(email, password, smtp_server, smtp_port)
 
     def _setup(self, email, password, smtp_server, smtp_port):
@@ -110,7 +112,7 @@ class EmailClient:
         try:
             self._client.sendmail(self._email, recipient, message.as_string())
         except (smtplib.SMTPServerDisconnected, smtplib.SMTPSenderRefused):
-            self._client.connect()
+            self._client.connect(self._smtp_server, self._smtp_port)
             self._client.sendmail(self._email, recipient, message.as_string())
 
     def _get_file_size(self, file):
