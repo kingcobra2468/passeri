@@ -23,15 +23,18 @@ class EmailClient:
         """
         self._client = None
         self._email = email
-        self._setup(email, password, smtp_server, smtp_port)
+        self._password = password
+        self._smtp_server = smtp_server
+        self._smtp_port = smtp_port
+        self._connect()
 
-    def _setup(self, email, password, smtp_server, smtp_port):
+    def _connect(self):
         """Sets up a Gmail client with the client credentials.
         """
         ssl_context = ssl.create_default_context()
         self._client = smtplib.SMTP_SSL(
-            smtp_server, smtp_port, context=ssl_context)
-        self._client.login(email, password)
+            self._smtp_server, self._smtp_port, context=ssl_context)
+        self._client.login(self._email, self._password)
 
     def send_files(self, recipient, *files):
         """Sends files to a given recipients. In the case where the total
@@ -109,8 +112,8 @@ class EmailClient:
 
         try:
             self._client.sendmail(self._email, recipient, message.as_string())
-        except smtplib.SMTPServerDisconnected:
-            self._client.connect()
+        except (smtplib.SMTPServerDisconnected, smtplib.SMTPSenderRefused):
+            self._connect()
             self._client.sendmail(self._email, recipient, message.as_string())
 
     def _get_file_size(self, file):
