@@ -12,7 +12,7 @@ from transit.pool import TransitPool
 from transit.email.client import EmailClient
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-load_dotenv()
+load_dotenv(override=True)
 
 
 def error_serializer(req, resp, exception):
