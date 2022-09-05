@@ -115,6 +115,3 @@ class Converter:
 
         return filenames
 
-
-x = Converter(['https://youtu.be/VpvyG2NrS1Y'], '/home/erik')
-x.download()
