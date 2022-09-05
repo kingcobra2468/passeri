@@ -2,4 +2,5 @@ yt-dlp==2022.6.29
 python-dotenv==0.20.0
 falcon==3.1.0
 jsonschema==4.6.0
+editdistance==0.6.0
 autoid3 @ git+https://github.com/kingcobra2468/AutoID3.git@70cf9ab4fd29538ee6f992ffd990de89c789772e
