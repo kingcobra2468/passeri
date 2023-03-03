@@ -1,4 +1,4 @@
-yt-dlp==2022.6.29
+yt-dlp==2023.2.17
 python-dotenv==0.20.0
 falcon==3.1.0
 jsonschema==4.6.0
