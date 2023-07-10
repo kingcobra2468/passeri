@@ -7,8 +7,8 @@ import smtplib
 import ssl
 
 
-class EmailClient:
-    """EmailClient serves as a client to interact with SMTP servers.
+class MailClient:
+    """MailClient serves as a client to interact with SMTP servers.
     """
     MAX_EMAIL_BODY_MB = 25
 
@@ -18,18 +18,19 @@ class EmailClient:
         Args:
             email (str): The email address of the sender email.
             password (str): The password of the sender email.
-            smtp_server (str, optional): _description_. Defaults to 'smtp.gmail.com'.
-            smtp_port (int, optional): _description_. Defaults to 465.
+            smtp_server (str, optional): The SMTP server host. Defaults to 'smtp.gmail.com'.
+            smtp_port (int, optional): The STMP server port. Defaults to 465.
         """
         self._client = None
         self._email = email
         self._password = password
         self._smtp_server = smtp_server
         self._smtp_port = smtp_port
+
         self._connect()
 
     def _connect(self):
-        """Sets up a Gmail client with the client credentials.
+        """Connects to the STMP server.
         """
         ssl_context = ssl.create_default_context()
         self._client = smtplib.SMTP_SSL(
@@ -52,8 +53,9 @@ class EmailClient:
 
         partition_start_idx = 0
         partition_end_idx = 0
-        files = [(file, self._get_file_size(file)) for file in files]
         current_size = 0
+        files = [(file, self._get_file_size(file)) for file in files]
+
         files.sort(key=lambda file: file[1])
         if self.MAX_EMAIL_BODY_MB < files[0][1]:
             return
@@ -95,6 +97,7 @@ class EmailClient:
         message = MIMEMultipart()
         message['To'] = recipient
         message['Subject'] = 'Passeri Mp3s'
+
         for file in list(files):
             type_subtype, _ = mimetypes.guess_type(file)
             maintype, subtype = type_subtype.split('/')

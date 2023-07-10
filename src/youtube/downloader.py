@@ -8,8 +8,8 @@ from autoid3.auto_id3_worker import AutoID3Worker
 import yt_dlp
 
 
-class Converter:
-    """Converter downloads Youtube links as MP3s. All mp3s will
+class YoutubeDownloader:
+    """YoutubeDownloader downloads Youtube links as MP3s. All mp3s will
     also have their ID3 data populated (cover, title, album) via
     autoid3 (which internally utilizes Shazam).
     """
@@ -114,4 +114,3 @@ class Converter:
                     self._download_path, f'{title}.mp3'))
 
         return filenames
-

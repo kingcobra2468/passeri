@@ -1,5 +1,5 @@
 {
-    "title": "YTMP3 Email",
+    "title": "Download Links to Email",
     "description": "Downloads a given youtube video as an mp3 and emails it to the recipient",
     "type": "object",
     "properties": {

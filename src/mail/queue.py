@@ -4,11 +4,11 @@ import pathlib
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
 
-from ytmp3.converter import Converter
+from youtube.downloader import YoutubeDownloader
 
 
-class TransitPool:
-    """TransitPool manages workers that asynchronously perform ytmp3 to
+class EmailDownloaderQueue:
+    """EmailDownloaderQueue manages workers that asynchronously perform ytmp3 to
     email sendoff.
     """
 
@@ -16,8 +16,8 @@ class TransitPool:
         """Constructor.
 
         Args:
-            email_client (transit.email.client.EmailClient): The Email client.
-            download_path (str): The path where mp3s will temporary be downloaded to. 
+            email_client (mail.client.MailClient): The Email client.
+            download_path (str): The path where mp3s will temporary be downloaded. 
         """
         self._email_client = email_client
         self._request_queue = Queue()
@@ -28,10 +28,10 @@ class TransitPool:
         """Pushes a new YTMP3 to email request. Requests are executed asynchronously.
 
         Args:
-            request (ytmp3.request.ConversionRequest): The meta of a given request.
+            request (mail.request.MailQueueRequest): The meta of a given request.
         """
         future = self._executor.submit(
-            TransitPool.worker, request, self._download_path
+            EmailDownloaderQueue.worker, request, self._download_path
         )
         future.add_done_callback(
             partial(self.download_callback, request.recipient))
@@ -55,11 +55,11 @@ class TransitPool:
         path.
 
         Args:
-            request (ytmp3.request.ConversionRequest): The meta of a given request.
+            request (mail.request.MailQueueRequest): The meta of a given request.
             download_path (str): The path where mp3s will temporary be downloaded to.
 
         Returns:
             List(str): A list of paths to the output mp3s. 
         """
-        converter = Converter(request.links, download_path)
-        return converter.download()
+        youtube_downloader = YoutubeDownloader(request.links, download_path)
+        return youtube_downloader.download()
