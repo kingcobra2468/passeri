@@ -6,6 +6,7 @@ from wsgiref.simple_server import make_server
 from dotenv import load_dotenv
 import falcon
 
+from db.cache import FileCache
 from resources.songs import SongDownloadResource
 from mail.queue import EmailDownloaderQueue
 from mail.client import MailClient
@@ -27,13 +28,16 @@ if __name__ == '__main__':
     email_password = getenv('PASSERI_EMAIL_PASSWORD')
     song_download_path = getenv('PASSERI_DOWNLOAD_PATH')
     passeri_port = int(getenv('PASSERI_PORT'))
+    cache_size = int(getenv('PASSERI_FILE_CACHE_SIZE', 1000))
+
+    file_cache = FileCache(100000)
 
     email_client = MailClient(email_address, email_password)
     email_download_queue = EmailDownloaderQueue(
-        email_client, song_download_path)
+        email_client, song_download_path, file_cache)
 
     song_download_resource = SongDownloadResource(
-        song_download_path, email_download_queue)
+        song_download_path, email_download_queue, file_cache)
 
     app = falcon.App(cors_enable=True)
     app.add_route('/songs/download', song_download_resource)
