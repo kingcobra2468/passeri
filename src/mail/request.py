@@ -3,9 +3,8 @@ from typing import List, Optional
 
 
 @dataclass
-class ConversionRequest:
-    """ConversionRequest contains meta for a given ytmp3 to
-    email request.
+class MailQueueRequest:
+    """MailQueueRequest holds meta for a EmailDownloaderQueue item.
     """
     recipient: Optional[str]
     links: List
