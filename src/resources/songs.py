@@ -13,9 +13,10 @@ class SongDownloadResource:
     video and downloads it to the recipient's device.
     """
 
-    def __init__(self, download_path, email_download_queue):
-        self.download_path = download_path
+    def __init__(self, download_path, email_download_queue, cache=None):
+        self._download_path = download_path
         self._email_download_queue = email_download_queue
+        self._cache = cache
 
     def on_get(self, req, resp):
         if 'link' not in req.params:
@@ -23,7 +24,7 @@ class SongDownloadResource:
 
         link = req.params['link']
         # add caching logic here or inside of Converter
-        youtube_downloader = YoutubeDownloader([link], self.download_path)
+        youtube_downloader = YoutubeDownloader([link], self._download_path, self._cache)
         file = youtube_downloader.download()[0]
 
         resp.downloadable_as = Path(file).name
