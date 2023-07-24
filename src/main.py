@@ -7,7 +7,9 @@ from dotenv import load_dotenv
 import falcon
 
 from db.cache import FileCache
-from resources.songs import SongDownloadResource
+from db.ledger import Mp3RequestLedger
+from resources.download import Mp3DownloadResource
+from resources.ledger import Mp3LedgerResource
 from mail.queue import EmailDownloaderQueue
 from mail.client import MailClient
 
@@ -26,21 +28,27 @@ def error_serializer(req, resp, exception):
 if __name__ == '__main__':
     email_address = getenv('PASSERI_EMAIL_ADDRESS')
     email_password = getenv('PASSERI_EMAIL_PASSWORD')
-    song_download_path = getenv('PASSERI_DOWNLOAD_PATH')
+    mp3_download_path = getenv('PASSERI_DOWNLOAD_PATH')
     passeri_port = int(getenv('PASSERI_PORT'))
+    mongo_db_host = getenv('PASSERI_MONGO_DB_HOST')
+
     cache_size = int(getenv('PASSERI_FILE_CACHE_SIZE', 1000))
 
     file_cache = FileCache(100000)
+    request_ledger = Mp3RequestLedger(mongo_db_host)
 
     email_client = MailClient(email_address, email_password)
     email_download_queue = EmailDownloaderQueue(
-        email_client, song_download_path, file_cache)
+        email_client, mp3_download_path, file_cache)
 
-    song_download_resource = SongDownloadResource(
-        song_download_path, email_download_queue, file_cache)
+    mp3_download_resource = Mp3DownloadResource(
+        mp3_download_path, email_download_queue, file_cache, request_ledger)
+    mp3_ledger_resource = Mp3LedgerResource(request_ledger)
 
     app = falcon.App(cors_enable=True)
-    app.add_route('/songs/download', song_download_resource)
+    app.add_route('/mp3s/download', mp3_download_resource)
+    app.add_route('/mp3s', mp3_ledger_resource)
+    
     app.set_error_serializer(error_serializer)
 
     with make_server('0.0.0.0', passeri_port, app) as httpd:
