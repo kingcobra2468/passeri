@@ -1,5 +1,5 @@
 {
-    "title": "Download Links to Email",
+    "title": "Download Youtube Links to Email",
     "description": "Downloads a given youtube video as an mp3 and emails it to the recipient",
     "type": "object",
     "properties": {
@@ -8,7 +8,7 @@
             "type": "string"
         },
         "links": {
-            "description": "Links of the Youtube videos",
+            "description": "Links to Youtube videos",
             "type": "array"
         }
     },

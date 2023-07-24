@@ -7,9 +7,6 @@ from cachetools import LRUCache
 class FileCache(LRUCache):
     """FileCache caches files via a LRU cache. Popped
     files are deleted from the system.
-
-    Args:
-        LRUCache (_type_): _description_
     """
 
     def __init__(self, maxsize, getsizeof=None):
