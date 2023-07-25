@@ -9,8 +9,7 @@ from mail.request import MailQueueRequest
 
 
 class Mp3DownloadResource:
-    """DirectDownloadResource handles the resource that downloads a given Youtube
-    video and downloads it to the recipient's device.
+    """A resource for downloading Youtube links as mp3s.
     """
 
     def __init__(self, download_path, email_download_queue, cache=None, request_ledger=None):
@@ -51,5 +50,11 @@ class Mp3DownloadResource:
             self.__log_request(req.context.links, req.context.recipient_email)
 
     def __log_request(self, links, recipient=None):
+        """Logs a request to the ledger.
+
+        Args:
+            links (List(str)): The links to download.
+            recipient (str, optional): The email recipient of the link. Defaults to None.
+        """
         for link in links:
             self._request_ledger.insert(link, recipient)

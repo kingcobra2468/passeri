@@ -1,19 +1,11 @@
-from pathlib import Path
-import datetime
+from datetime import datetime
 
-from falcon.media.validators import jsonschema
 from falcon import HTTPBadRequest
-from tzlocal import get_localzone
 import pytz
-
-from schemas import load_schema
-from youtube.downloader import YoutubeDownloader
-from mail.request import MailQueueRequest
 
 
 class Mp3LedgerResource:
-    """DirectDownloadResource handles the resource that downloads a given Youtube
-    video and downloads it to the recipient's device.
+    """A resource for retrieving request records.
     """
 
     def __init__(self, ledger=None):
@@ -30,9 +22,21 @@ class Mp3LedgerResource:
         if recipient:
             query['recipient'] = recipient
 
+        print(req.params)
         resp.media = self._ledger.get_all(query)
 
     def __parse_time_as_local_utc(self, input_time):
+        """Parses the input time as UTC format.
+
+        Args:
+            input_time (str): The input time.
+
+        Raises:
+            HTTPBadRequest: Raised if the time is not UTC compliant.
+
+        Returns:
+            datetime: The UTC time.
+        """
         try:
             datetime_obj = datetime.strptime(
                 input_time, "%Y-%m-%dT%H:%M:%S.%fZ")

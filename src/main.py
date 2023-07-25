@@ -30,12 +30,18 @@ if __name__ == '__main__':
     email_password = getenv('PASSERI_EMAIL_PASSWORD')
     mp3_download_path = getenv('PASSERI_DOWNLOAD_PATH')
     passeri_port = int(getenv('PASSERI_PORT'))
-    mongo_db_host = getenv('PASSERI_MONGO_DB_HOST')
+    is_request_logging_enabled = getenv(
+        'PASSERI_REQUEST_LOGGING_ENABLED', False).lower() in ('true', '1', 't')
 
     cache_size = int(getenv('PASSERI_FILE_CACHE_SIZE', 1000))
 
     file_cache = FileCache(100000)
-    request_ledger = Mp3RequestLedger(mongo_db_host)
+    request_ledger = None
+
+    if is_request_logging_enabled:
+        mongo_db_host = getenv('PASSERI_MONGO_DB_HOST')
+        mongo_db_port = int(getenv('PASSERI_MONGO_DB_PORT'))
+        request_ledger = Mp3RequestLedger(mongo_db_host, mongo_db_port)
 
     email_client = MailClient(email_address, email_password)
     email_download_queue = EmailDownloaderQueue(
@@ -47,11 +53,12 @@ if __name__ == '__main__':
 
     app = falcon.App(cors_enable=True)
     app.add_route('/mp3s/download', mp3_download_resource)
-    app.add_route('/mp3s', mp3_ledger_resource)
-    
+
+    if is_request_logging_enabled:
+        app.add_route('/mp3s', mp3_ledger_resource)
+
     app.set_error_serializer(error_serializer)
 
     with make_server('0.0.0.0', passeri_port, app) as httpd:
         logging.info(f'Serving on port {passeri_port}...')
-
         httpd.serve_forever()

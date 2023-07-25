@@ -8,7 +8,7 @@ import ssl
 
 
 class MailClient:
-    """MailClient serves as a client to interact with SMTP servers.
+    """A client to interact with SMTP servers.
     """
     MAX_EMAIL_BODY_MB = 25
 
@@ -19,7 +19,7 @@ class MailClient:
             email (str): The email address of the sender email.
             password (str): The password of the sender email.
             smtp_server (str, optional): The SMTP server host. Defaults to 'smtp.gmail.com'.
-            smtp_port (int, optional): The STMP server port. Defaults to 465.
+            smtp_port (int, optional): The SMTP server port. Defaults to 465.
         """
         self._client = None
         self._email = email
@@ -30,7 +30,7 @@ class MailClient:
         self._connect()
 
     def _connect(self):
-        """Connects to the STMP server.
+        """Connects to the SMTP server.
         """
         ssl_context = ssl.create_default_context()
         self._client = smtplib.SMTP_SSL(
@@ -38,14 +38,14 @@ class MailClient:
         self._client.login(self._email, self._password)
 
     def send_files(self, recipient, *files):
-        """Sends files to a given recipients. In the case where the total
-        number of files exceeds the Gmail max body size(25Mb), the emails
-        be partitioned into smaller emails. Files with sizes over the max
-        body size will not be sent.
+        """Sends files to the recipients. In the case where the total
+        number of files exceeds the Gmail max body size(25Mb), the files
+        are partitioned across emails. Files exceeding the max body size
+        are ignored.
 
         Args:
-            recipient (str): The recipient email to which to send the files.
-            files (str): The paths to the file attachments.
+            recipient (str): The recipient email of the files.
+            files (str): The file attachment paths.
         """
         num_files = len(files)
         if not num_files:
@@ -88,11 +88,11 @@ class MailClient:
             current_size = 0
 
     def _send_email(self, recipient, files):
-        """Sends files to a given recipients.
+        """Sends the files to the recipients.
 
         Args:
-            recipient (str): The recipient email to which to send the files.
-            files (str): The paths to the file attachments.
+            recipient (str): The recipient email of the files.
+            files (str): The file attachment paths.
         """
         message = MIMEMultipart()
         message['To'] = recipient
@@ -120,10 +120,10 @@ class MailClient:
             self._client.sendmail(self._email, recipient, message.as_string())
 
     def _get_file_size(self, file):
-        """Gets the size of a given file.
+        """Gets the file size.
 
         Args:
-            file (str): The path to the file.
+            file (str): The file attachment path.
 
         Returns:
             int: The size of the file in Mb.
