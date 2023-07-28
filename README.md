@@ -31,6 +31,9 @@ the following config options can then be set:
   ID3 metadata entry.
 - **PASSERI_PORT=** the port address of Passeri.
 - **PASSERI_FILE_CACHE_SIZE=** the max file cache size.
+- **PASSERI_MONGO_DB_HOST=** the MongoDB host if logging is enabled.
+- **PASSERI_MONGO_DB_PORT=** the MongoDB port if logging is enabled.
+- **PASSERI_REQUEST_LOGGING_ENABLED=** whether logging is enabled (`0` for disabled, and vise-versa).
 
 ## Installation
 
