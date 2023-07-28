@@ -6,6 +6,7 @@ from db.mp3 import Mp3
 class Mp3RequestLedger:
     """Ledger for storing request meta. 
     """
+
     def __init__(self, mongodb_host, mongodb_port=27017):
         """Constructor.
 
@@ -45,6 +46,7 @@ class Mp3RequestLedger:
         requests = list(self._mp3_col.find(query, projection={'_id': False}))
 
         for request in requests:
-            request['inserted_at'] = request['inserted_at'].isoformat()[:-3]+'Z'
+            request['inserted_at'] = request['inserted_at'].isoformat()[
+                :-3]+'Z'
 
         return requests
