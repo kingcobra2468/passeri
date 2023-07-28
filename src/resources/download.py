@@ -38,7 +38,7 @@ class Mp3DownloadResource:
     def on_post(self, req, resp):
         data = req.get_media()
         req.context.links = data['links']
-        req.context.recipient_email = data['recipient_email']
+        req.context.recipient_email = data['recipient']
 
         request = MailQueueRequest(
             req.context.recipient_email, req.context.links)
