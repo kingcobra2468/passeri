@@ -3,7 +3,7 @@
     "description": "Downloads a given youtube video as an mp3 and emails it to the recipient",
     "type": "object",
     "properties": {
-        "recipient_email": {
+        "recipient": {
             "description": "The email address where the mp3s will be sent to",
             "type": "string"
         },
@@ -13,7 +13,7 @@
         }
     },
     "required": [
-        "recipient_email",
+        "recipient",
         "links"
     ]
 }
