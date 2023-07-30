@@ -7,3 +7,4 @@ autoid3 @ git+https://github.com/kingcobra2468/AutoID3.git@70cf9ab4fd29538ee6f99
 pytz==2023.3
 cachetools==5.3.1
 pydantic==2.0.2
+pymongo==4.4.0
