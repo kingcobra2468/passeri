@@ -22,7 +22,6 @@ class Mp3LedgerResource:
         if recipient:
             query['recipient'] = recipient
 
-        print(req.params)
         resp.media = self._ledger.get_all(query)
 
     def __parse_time_as_local_utc(self, input_time):
