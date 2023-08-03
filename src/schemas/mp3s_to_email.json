@@ -1,19 +1,19 @@
 {
-    "title": "Download Links to Email",
+    "title": "Download Youtube Links to Email",
     "description": "Downloads a given youtube video as an mp3 and emails it to the recipient",
     "type": "object",
     "properties": {
-        "recipient_email": {
+        "recipient": {
             "description": "The email address where the mp3s will be sent to",
             "type": "string"
         },
         "links": {
-            "description": "Links of the Youtube videos",
+            "description": "Links to Youtube videos",
             "type": "array"
         }
     },
     "required": [
-        "recipient_email",
+        "recipient",
         "links"
     ]
 }

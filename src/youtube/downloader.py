@@ -10,9 +10,9 @@ import yt_dlp
 
 
 class YoutubeDownloader:
-    """YoutubeDownloader downloads Youtube links as MP3s. All mp3s will
-    also have their ID3 data populated (cover, title, album) via
-    autoid3 (which internally utilizes Shazam).
+    """Downloads Youtube links as MP3s. Compatible mp3s will also have
+    its ID3 metadata populated (cover, title, album) via autoid3
+    (which internally utilizes Shazam).
     """
     YDL_OPTS = {
         'format': 'bestaudio/best',
@@ -29,8 +29,8 @@ class YoutubeDownloader:
         """Constructor.
 
         Args:
-            links (List[str])): A list of Youtube links.
-            download_path (str): The path where mp3s will temporary be downloaded to.
+            links (List[str])): The Youtube links to download.
+            download_path (str): The mp3 download path.
             cache (db.cache.FileCache): The file cache.
         """
         self._cache = cache
@@ -45,10 +45,10 @@ class YoutubeDownloader:
             download_path, '%(title)s.%(ext)s')
 
     def download(self):
-        """Downloads the given links as mp3s and applies autoid3 to them.
+        """Downloads the links as mp3s and populates ID3 data.
 
         Returns:
-            List[str]: A list of paths to the output mp3s.
+            List[str]: The paths to the downloaded mp3s.
         """
         with yt_dlp.YoutubeDL(self.YDL_OPTS) as ydl:
             ydl.download(self._links_uncached)
@@ -81,7 +81,7 @@ class YoutubeDownloader:
         return files
 
     def clean(self):
-        """Removes the downloaded files from the filesystem.
+        """Removes the downloaded files.
         """
         files = self.get_files()
 
@@ -89,10 +89,10 @@ class YoutubeDownloader:
             pathlib.Path(file).unlink()
 
     async def __populate_metadata(self, files):
-        """Populates the ID3 metadata of the mp3s.
+        """Populates the mp3 ID3 metadata.
 
         Args:
-            files (List[str]): A list of paths to the mp3s
+            files (List[str]): The paths to the mp3s.
         """
         mp3_queue = asyncio.Queue()
 
@@ -108,7 +108,7 @@ class YoutubeDownloader:
         """Gets the paths to output mp3s.
 
         Returns:
-            (List[str]): A list of paths to the output mp3s
+            (List[str]): The paths to the mp3s.
         """
         if not self._is_links_downloaded:
             raise ValueError('Files not downloaded yet')
@@ -133,7 +133,7 @@ class YoutubeDownloader:
         """Populates the ID3 metadata of the mp3s.
 
         Args:
-            files (List[str]): A list of paths to the mp3s
+            files (List[str]): The paths to the mp3s.
         """
         asyncio.run(self.__populate_metadata(files))
 
@@ -141,8 +141,7 @@ class YoutubeDownloader:
         """Caches the downloaded links.
 
         Args:
-            files (List(str)): the list of output file paths of the
-            input links.
+            files (List(str)): The paths to the mp3s.
         """
         while not self._cache.lock():
             time.sleep(0.5)
@@ -153,7 +152,7 @@ class YoutubeDownloader:
         self._cache.unlock()
 
     def _remove_cached_links(self, links):
-        """Removes links that have already been cached.
+        """Removes links that were found in the cache.
 
         Args:
             links (List(str)): the links to be downloaded.

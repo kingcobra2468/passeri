@@ -4,7 +4,7 @@ from typing import List, Optional
 
 @dataclass
 class MailQueueRequest:
-    """MailQueueRequest holds meta for a EmailDownloaderQueue item.
+    """A Youtube to mp3 email request.
     """
     recipient: Optional[str]
     links: List
