@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.8
 
 ARG passeri_port
 ARG passeri_email_address
