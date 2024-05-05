@@ -32,7 +32,7 @@ class Mp3RequestLedger:
             recipient (str, optional): The email recipient of the link. Defaults to None.
         """
         song = Mp3(link=link, recipient=recipient)
-        self._mp3_col.insert_one(song.model_dump())
+        self._mp3_col.insert_one(song.dict())
 
     def get_all(self, query={}):
         """Gets all records from the input query.
