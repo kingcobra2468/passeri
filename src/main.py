@@ -11,6 +11,7 @@ from db.ledger import Mp3RequestLedger
 from middlewares.ledger import RequestLedgerMiddleware
 from resources.download import Mp3DownloadResource
 from resources.ledger import Mp3LedgerResource
+from resources.info import Mp3InfoResource
 from mail.queue import EmailDownloaderQueue
 from mail.client import MailClient
 
@@ -51,12 +52,14 @@ if __name__ == '__main__':
     mp3_download_resource = Mp3DownloadResource(
         mp3_download_path, email_download_queue, file_cache)
     mp3_ledger_resource = Mp3LedgerResource(request_ledger)
+    mp3_info_resource = Mp3InfoResource()
 
     request_ledger_middleware = RequestLedgerMiddleware
 
     app = falcon.App(cors_enable=True, middleware=[
                      request_ledger_middleware(request_ledger)])
     app.add_route('/mp3s/download', mp3_download_resource)
+    app.add_route('/mp3s/download/info', mp3_info_resource)
 
     if is_request_logging_enabled:
         app.add_route('/mp3s', mp3_ledger_resource)
