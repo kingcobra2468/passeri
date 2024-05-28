@@ -116,18 +116,24 @@ class YoutubeDownloader:
         if self._is_links_downloaded and self._files:
             return self._files
 
-        with yt_dlp.YoutubeDL(self.YDL_OPTS) as ydl:
-            for link in self._links:
-                if link in self._cached_links:
-                    self._files.append(self._cached_links[link])
-                    continue
+        for link in self._links:
+            if link in self._cached_links:
+                self._files.append(self._cached_links[link])
+                continue
 
-                info_dict = ydl.extract_info(link, download=False)
-                title = info_dict.get('title', None)
-                self._files.append(os.path.join(
-                    self._download_path, f'{title}.mp3'))
+            file_name = YoutubeDownloader.get_file_name(link)
+            self._files.append(os.path.join(
+                self._download_path, file_name))
 
         return self._files
+
+    @staticmethod
+    def get_file_name(link):
+        with yt_dlp.YoutubeDL(YoutubeDownloader.YDL_OPTS) as ydl:
+            info_dict = ydl.extract_info(link, download=False)
+            title = info_dict.get('title')
+
+            return f'{title}.mp3'
 
     def _populate_metadata(self, files):
         """Populates the ID3 metadata of the mp3s.
