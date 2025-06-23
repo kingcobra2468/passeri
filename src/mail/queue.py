@@ -10,7 +10,7 @@ class EmailDownloaderQueue:
     across multiple workers.
     """
 
-    def __init__(self, mail_client, download_path, cache=None):
+    def __init__(self, mail_client, download_path, _cookies_file_path=None, cache=None):
         """Constructor.
 
         Args:
@@ -22,6 +22,7 @@ class EmailDownloaderQueue:
         self._request_queue = Queue()
         self._executor = ThreadPoolExecutor(max_workers=2)
         self._download_path = download_path
+        self._cookies_file_path = _cookies_file_path
         self._cache = cache
 
     def push(self, request):
@@ -32,7 +33,7 @@ class EmailDownloaderQueue:
             request (mail.request.MailQueueRequest): The request meta.
         """
         future = self._executor.submit(
-            EmailDownloaderQueue.worker, request, self._download_path, self._cache
+            EmailDownloaderQueue.worker, request, self._download_path, self._cookies_file_path, self._cache
         )
         future.add_done_callback(
             partial(self.download_callback, request.recipient))
@@ -53,7 +54,7 @@ class EmailDownloaderQueue:
             youtube_downloader.clean()
 
     @staticmethod
-    def worker(request, download_path, cache):
+    def worker(request, download_path, cookies_file_path, cache):
         """Worker that downloads the requested links as mp3s to the download
         path.
 
@@ -65,7 +66,7 @@ class EmailDownloaderQueue:
             List(str): A list of the downloaded mp3s. 
         """
         youtube_downloader = YoutubeDownloader(
-            request.links, download_path, cache)
+            request.links, download_path, cookies_file_path, cache)
         youtube_downloader.download()
 
         return youtube_downloader

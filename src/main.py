@@ -31,12 +31,12 @@ if __name__ == '__main__':
     email_address = getenv('PASSERI_EMAIL_ADDRESS')
     email_password = getenv('PASSERI_EMAIL_PASSWORD')
     mp3_download_path = getenv('PASSERI_DOWNLOAD_PATH')
+    cookies_file_path = getenv('PASSERI_COOKIES_FILE_PATH')
     passeri_port = int(getenv('PASSERI_PORT'))
+    cache_size = int(getenv('PASSERI_FILE_CACHE_SIZE', 1000))
     is_request_logging_enabled = getenv(
         'PASSERI_REQUEST_LOGGING_ENABLED', False).lower() in ('true', '1', 't')
-
-    cache_size = int(getenv('PASSERI_FILE_CACHE_SIZE', 1000))
-
+    
     file_cache = FileCache(100000)
     request_ledger = None
 
@@ -47,10 +47,10 @@ if __name__ == '__main__':
 
     email_client = MailClient(email_address, email_password)
     email_download_queue = EmailDownloaderQueue(
-        email_client, mp3_download_path, file_cache)
+        email_client, mp3_download_path, cookies_file_path, file_cache)
 
     mp3_download_resource = Mp3DownloadResource(
-        mp3_download_path, email_download_queue, file_cache)
+        mp3_download_path, email_download_queue, cookies_file_path, file_cache)
     mp3_ledger_resource = Mp3LedgerResource(request_ledger)
     mp3_info_resource = Mp3InfoResource()
 

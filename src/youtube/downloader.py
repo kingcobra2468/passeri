@@ -15,7 +15,7 @@ class YoutubeDownloader:
     (which internally utilizes Shazam).
     """
     YDL_OPTS = {
-        'format': 'bestaudio/best',
+        'format': 'bestaudio',
         'postprocessors': [
             {
                 'key': 'FFmpegExtractAudio',
@@ -25,12 +25,14 @@ class YoutubeDownloader:
         ],
     }
 
-    def __init__(self, links, download_path, cache=None):
+    def __init__(self, links, download_path, cookies_file_path=None, cache=None):
         """Constructor.
 
         Args:
             links (List[str])): The Youtube links to download.
             download_path (str): The mp3 download path.
+            cookies_file_path (str): The cookies file in Netscape HTTP Cookie File
+            format for a given Youtube Music account.
             cache (db.cache.FileCache): The file cache.
         """
         self._cache = cache
@@ -43,6 +45,9 @@ class YoutubeDownloader:
 
         self.YDL_OPTS['outtmpl'] = os.path.join(
             download_path, '%(title)s.%(ext)s')
+        
+        if cookies_file_path:
+            self.YDL_OPTS['cookiefile'] = cookies_file_path
 
     def download(self):
         """Downloads the links as mp3s and populates ID3 data.
@@ -166,6 +171,9 @@ class YoutubeDownloader:
         Returns:
             List(str): the list of non-cached links.
         """
+        if not self._cache:
+            return links
+
         filtered_links = links.copy()
         while not self._cache.lock():
             time.sleep(0.5)
