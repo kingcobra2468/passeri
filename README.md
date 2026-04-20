@@ -27,13 +27,13 @@ the following config options can then be set:
 
 - **PASSERI_EMAIL_ADDRESS=** the email address of the email account.
 - **PASSERI_EMAIL_PASSWORD=** the password of the email account.
-- **PASSERI_DOWNLOAD_PATH=** the directory where mp3s will be temporary stored during
-  ID3 metadata entry.
+- **PASSERI_DOWNLOAD_PATH=** the directory where mp3s will be temporary stored during ID3 metadata entry.
 - **PASSERI_PORT=** the port address of Passeri.
 - **PASSERI_FILE_CACHE_SIZE=** the max file cache size.
 - **PASSERI_MONGO_DB_HOST=** the MongoDB host if logging is enabled.
 - **PASSERI_MONGO_DB_PORT=** the MongoDB port if logging is enabled.
 - **PASSERI_REQUEST_LOGGING_ENABLED=** whether logging is enabled (`0` for disabled, and vise-versa).
+- **PASSERI_COOKIES_FILE_PATH=** Path to a cookies file in Netscape format, exported from your browser while logged in to YouTube. This allows yt-dlp to access videos that require authentication. If not set, only public videos can be downloaded.
 
 ## Installation
 
@@ -48,13 +48,14 @@ To install and run Passeri, follow the following steps:
 ### Docker
 
 1. Build Passeri image with `docker build -t passeri:1.0 .` .
-2. Setup the `.env` file as described in the [config](#configuration) section. Note that
-   the paths for **PASSERI_CRED_FILE_PATH** and **PASSERI_TOKEN_FILE_PATH** will be
-   relative to the filesystem instead of the docker image. As such, the paths should be
-   relative to the expose volume `/passeri/config`.
-3. Launch Passeri. An example execution, assuming **PASSERI_PORT** is set to `8088`, and
-   the token and client secret current directory, would be:
+2. Setup the `.env` file as described in the [config](#config) section.By default, the Dockerfile expects the cookies file at `/passeri/secrets/cookies.txt` (see `PASSERI_COOKIES_FILE_PATH`).
+3. Launch Passeri. Example (assuming **PASSERI_PORT** is set to `8088`):
 
 ```bash
-docker run --env-file .env -p 8088:8088 -v $PWD:/passeri/config  passeri:1.0
+docker run --env-file .env -p 8088:8088 \
+  -v $PWD:/passeri/config \
+  -v /path/to/your/cookies.txt:/passeri/secrets/cookies.txt \
+  passeri:1.0
 ```
+
+Replace `/path/to/your/cookies.txt` with the path to your exported YouTube cookies file.
